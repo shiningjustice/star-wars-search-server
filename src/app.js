@@ -6,7 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 
-const userRouter = require('./userRouter/userRouter');
+const userRouter = require('./userRouter/user-router');
 
 const app = express(); 
 
