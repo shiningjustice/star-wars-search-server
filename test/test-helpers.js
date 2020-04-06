@@ -1,5 +1,7 @@
 const knex = require('knex');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('../src/config');
 
 /**
  * create a knex instance connected to postgres
@@ -33,6 +35,22 @@ function makeUsersArray() {
     },
   ];
 }
+
+/**
+ * make a bearer token with jwt for authorization header
+ * @param {object} user - contains `id`, `username`
+ * @param {string} secret - used to create the JWT
+ * @returns {string} - for HTTP authorization header
+ */
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+  const token = jwt.sign({ user_id: user.id, first_name: user.first_name }, secret, {
+    subject: user.username,
+    expiresIn: config.JWT_EXPIRY,
+    algorithm: 'HS256',
+  });
+  return `Bearer ${token}`;
+}
+
 
 /**
  * remove data from tables and reset sequences for SERIAL id fields
@@ -70,6 +88,7 @@ function seedUsers(db, users) {
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
+  makeAuthHeader,
   cleanTables,
   seedUsers
 }
