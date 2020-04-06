@@ -10,6 +10,8 @@
     "migrate": "postgrator --config postgrator-config.js",
     "migrate:test": "env NODE_ENV=test npm run migrate",
     "migrate:production": "env SSL=true DATABASE_URL=$(heroku config:get DATABASE_URL) npm run migrate",
+    "seed": "psql -U admin -f seeds/seed.tables.sql -d starwars",
+    "seed:prod": "psql -U admin -f seeds/seed.tables.sql -d \"$(heroku config:get DATABASE_URL)\"",
     "predeploy": "npm audit fix",
     "deploy": "git push heroku master"
   },
@@ -22,6 +24,8 @@
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "helmet": "^3.21.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.20.13",
     "morgan": "^1.9.1",
     "pg": "^8.0.0"
   },

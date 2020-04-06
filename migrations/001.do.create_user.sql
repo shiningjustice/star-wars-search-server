@@ -4,4 +4,4 @@ CREATE TABLE "user" (
   "password" TEXT NOT NULL,
   "first_name" TEXT NOT NULL,
   "side" TEXT DEFAULT 'light-side'
-)
+);
