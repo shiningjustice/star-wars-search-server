@@ -1,6 +1,7 @@
 BEGIN;
 
 TRUNCATE
+  "saved_people",
   "user";
 
 INSERT INTO "user" ("id", "username", "password", "first_name", "side")
