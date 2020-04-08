@@ -1,1 +1,1 @@
-DROP TABLE saved_people;
+DROP TABLE IF EXISTS saved_people;

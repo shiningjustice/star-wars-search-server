@@ -45,7 +45,6 @@ authRouter
         authToken: AuthService.createJwt(subject, payload)
       });
     } catch (error) {
-      console.log('caught it');
       next(error);
     };
   })

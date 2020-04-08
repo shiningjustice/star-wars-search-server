@@ -15,31 +15,106 @@ function makeKnexInstance() {
 }
 
 /**
- * create a knex instance connected to postgres
- * @returns {array} of user objects
+ * @const {array} - user objects
  */
-function makeUsersArray() {
+const usersArray = [
+  {
+    id: 1,
+    username: 'test-user-1',
+    password: 'password',
+    first_name: 'Test user 1',
+  },
+  {
+    id: 2,
+    username: 'test-user-2',
+    password: 'password',
+    first_name: 'Test user 2',
+    side: 'dark-side'
+  },
+];
+
+
+/**
+ * @const {array} of categories of data, type string (NOT saved objects)
+ */
+const categories = ['people', 'films', 'starships', 'vehicles', 'species', 'planets'];
+
+/**
+ * @returns seeds according to available ids for category
+ * @param {string} category
+ */
+function createSavedSeeds(category) {
+  if (['starships', 'species'].includes(category)) {
+    return [
+      {
+        id: 5,
+        user_id: 1, 
+        favorited: true, 
+        notes: 'test notes',
+      }, 
+      {
+        id: 9, 
+        user_id: 1, 
+        favorited: true,
+        notes: '', 
+      }, 
+      {
+        id: 10, 
+        user_id: 1, 
+        favorited: false,
+        notes: 'another test notes'
+      }
+    ];
+  } 
+  if (category === 'vehicles') {
+    return [
+      {
+        id: 4,
+        user_id: 1, 
+        favorited: true, 
+        notes: 'test notes',
+      }, 
+      {
+        id: 6, 
+        user_id: 1, 
+        favorited: true,
+        notes: '', 
+      }, 
+      {
+        id: 7, 
+        user_id: 1, 
+        favorited: false,
+        notes: 'another test notes'
+      }
+    ];
+  }
   return [
     {
-      id: 1,
-      username: 'test-user-1',
-      password: 'password',
-      first_name: 'Test user 1',
-    },
-    {
       id: 2,
-      username: 'test-user-2',
-      password: 'password',
-      first_name: 'Test user 2',
-      side: 'dark-side'
-    },
-  ];
-}
+      user_id: 1, 
+      favorited: true, 
+      notes: 'test notes',
+    }, 
+    {
+      id: 3, 
+      user_id: 1, 
+      favorited: true,
+      notes: '', 
+    }, 
+    {
+      id: 4, 
+      user_id: 1, 
+      favorited: false,
+      notes: 'another test notes'
+    }
+  ]
+} 
+
 
 /**
  * make a bearer token with jwt for authorization header
  * @param {object} user - contains `id`, `username`
- * @param {string} secret - used to create the JWT
+ * @param {string} secret - used to create the JWT, default provided
  * @returns {string} - for HTTP authorization header
  */
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
@@ -62,6 +137,12 @@ function cleanTables(db) {
     trx
       .raw(
         `TRUNCATE
+        "saved_people",
+        "saved_films",
+        "saved_starships",
+        "saved_vehicles",
+        "saved_species",
+        "saved_planets",
         "user"`
       )
   );
@@ -85,10 +166,26 @@ function seedUsers(db, users) {
   });
 }
 
+/**
+ * insert category data into db
+ * @param {knex instance} db
+ * @param {string} category - formats to be `saved_${category}` before querying db
+ * @param {array} data - data to be saved
+ * @returns {Promise} - when specified category table is seeded
+ */
+function seedCategory(db, category, data) {
+  return db.transaction(async (trx) => {
+    await trx.into(`saved_${category}`).insert(data);
+  });
+}
+
 module.exports = {
   makeKnexInstance,
-  makeUsersArray,
+  usersArray,
+  categories,
+  createSavedSeeds,
   makeAuthHeader,
   cleanTables,
-  seedUsers
+  seedUsers, 
+  seedCategory
 }

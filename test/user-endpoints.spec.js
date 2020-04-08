@@ -5,7 +5,7 @@ const helpers = require('./test-helpers');
 describe ('User Endpoints', function() {
   let db;
 
-  const testUsers = helpers.makeUsersArray();
+  const testUsers = helpers.usersArray;
   const testUser = testUsers[0];
 
   before('make knex instance', () => {
